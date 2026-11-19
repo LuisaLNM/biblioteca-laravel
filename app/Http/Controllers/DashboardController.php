@@ -1,0 +1,22 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Livro;
+use App\Models\Leitor;
+use App\Models\Emprestimo;
+
+class DashboardController extends Controller
+{
+    public function index()
+    {
+        $totalLivros   = Livro::count();
+        $totalLeitores = Leitor::count();
+        $emAndamento   = Emprestimo::where('status', 'Em andamento')->count();
+        $atrasados     = Emprestimo::whereNull('data_devolucao')
+                            ->whereDate('data_devolucao_prevista', '<', today())
+                            ->count();
+
+        return view('dashboard', compact('totalLivros', 'totalLeitores', 'emAndamento', 'atrasados'));
+    }
+}
